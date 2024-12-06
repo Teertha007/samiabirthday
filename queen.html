@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Samia!</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #ff99cc, #ffe6f2);
+            color: #333;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: #ff4081;
+            margin-top: 20vh;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            animation: zoomIn 2s ease-in-out;
+        }
+
+        p {
+            font-size: 1.8rem;
+            color: #555;
+            margin: 20px;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        .heart {
+            font-size: 4rem;
+            color: #ff4081;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Birthday, Samia!</h1>
+    <p>To the most special person in my life.<br> My love. My queen. My everything.</p>
+    <div class="heart">❤️</div>
+
+    <!-- Confetti Effect -->
+    <div class="confetti">
+        <canvas id="confettiCanvas"></canvas>
+    </div>
+
+    <!-- Background Music -->
+    <audio autoplay loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-birthday.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Confetti Effect
+        const canvas = document.getElementById("confettiCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const confettiCount = 150;
+        const confetti = [];
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        class Confetti {
+            constructor(x, y, size, speed, color) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speed = speed;
+                this.color = color;
+                this.angle = random(0, Math.PI * 2);
+                this.spin = random(-0.05, 0.05);
+            }
+
+            update() {
+                this.y += this.speed;
+                this.angle += this.spin;
+
+                if (this.y > canvas.height) {
+                    this.y = -10;
+                    this.x = random(0, canvas.width);
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push(
+                    new Confetti(
+                        random(0, canvas.width),
+                        random(0, canvas.height),
+                        random(5, 15),
+                        random(2, 5),
+                        `hsl(${random(0, 360)}, 100%, 50%)`
+                    )
+                );
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let c of confetti) {
+                c.update();
+                c.draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        createConfetti();
+        animate();
+
+        // Resize canvas on window resize
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
